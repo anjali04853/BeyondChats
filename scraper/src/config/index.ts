@@ -4,7 +4,7 @@ dotenv.config();
 
 export const config = {
   // API Configuration
-  apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3001/api',
+  apiBaseUrl: process.env.API_BASE_URL || 'https://beyondchats-ocbd.onrender.com/api',
 
   // Puppeteer Configuration
   puppeteer: {
