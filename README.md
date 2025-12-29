@@ -167,8 +167,8 @@ beyondchats-article-scraper/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/beyondchats-article-scraper.git
-cd beyondchats-article-scraper
+git clone https://github.com/anjali04853/BeyondChats.git
+cd BeyondChats
 ```
 
 ### 2. Install Dependencies
