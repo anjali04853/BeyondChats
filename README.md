@@ -379,3 +379,5 @@ cd frontend && npm test
 ## 📄 License
 
 This project is created for the BeyondChats Full Stack Developer Intern assignment.
+
+**GitHub Repository:** [https://github.com/anjali04853/BeyondChats.git](https://github.com/anjali04853/BeyondChats.git)
