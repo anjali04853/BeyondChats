@@ -43,12 +43,12 @@ async function main(): Promise<void> {
       failed: storeResult.failed.length,
     });
 
-    // Phase 3: Enhance articles (only if OpenAI API key is configured)
-    if (config.openai.apiKey) {
+    // Phase 3: Enhance articles (only if LLM API key is configured)
+    if (config.llm.apiKey) {
       logger.info('Scraper', 'Phase 3: Enhancing articles with LLM');
       await enhanceArticles(storeResult.successful);
     } else {
-      logger.warn('Scraper', 'Skipping LLM enhancement - OPENAI_API_KEY not configured');
+      logger.warn('Scraper', 'Skipping LLM enhancement - GROQ_API_KEY not configured');
     }
 
     // Summary

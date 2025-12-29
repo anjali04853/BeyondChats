@@ -1,16 +1,16 @@
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 import { config } from '../config';
 import { logger } from '../utils/logger';
 import { ReferenceContent, EnhancedContent } from '../types';
 
 class LLMEnhancerService {
-  private client: OpenAI;
-  private readonly maxRetries = config.openai.maxRetries;
-  private readonly model = config.openai.model;
+  private client: Groq;
+  private readonly maxRetries = config.llm.maxRetries;
+  private readonly model = config.llm.model;
 
   constructor() {
-    this.client = new OpenAI({
-      apiKey: config.openai.apiKey,
+    this.client = new Groq({
+      apiKey: config.llm.apiKey,
     });
   }
 
@@ -52,7 +52,7 @@ class LLMEnhancerService {
 Title: ${original.title}
 
 Content:
-${original.content}
+${original.content.substring(0, 3000)}${original.content.length > 3000 ? '...' : ''}
 
 `;
 
@@ -63,7 +63,7 @@ The following articles cover similar topics and can provide additional insights:
 `;
       references.forEach((ref, index) => {
         prompt += `### Reference ${index + 1}: ${ref.title}
-${ref.content.substring(0, 2000)}${ref.content.length > 2000 ? '...' : ''}
+${ref.content.substring(0, 1500)}${ref.content.length > 1500 ? '...' : ''}
 
 `;
       });
@@ -84,7 +84,7 @@ Please provide the enhanced article content only, without any meta-commentary.`;
 
 
   /**
-   * Call OpenAI API with retry logic
+   * Call Groq API with retry logic
    * Requirements: 6.6
    */
   private async callWithRetry(prompt: string): Promise<string> {
@@ -112,7 +112,7 @@ Please provide the enhanced article content only, without any meta-commentary.`;
 
         const content = response.choices[0]?.message?.content;
         if (!content) {
-          throw new Error('Empty response from OpenAI API');
+          throw new Error('Empty response from Groq API');
         }
 
         logger.info('LLMEnhancerService', 'API call successful', { attempt });

@@ -28,7 +28,15 @@ export const config = {
     searchDelay: 2000, // Delay between searches to avoid rate limiting
   },
 
-  // OpenAI Configuration
+  // LLM Configuration (supports OpenAI or Groq)
+  llm: {
+    provider: process.env.LLM_PROVIDER || 'groq', // 'openai' or 'groq'
+    apiKey: process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY || '',
+    model: process.env.LLM_MODEL || 'llama-3.1-8b-instant',
+    maxRetries: 3,
+  },
+
+  // OpenAI Configuration (legacy)
   openai: {
     apiKey: process.env.OPENAI_API_KEY || '',
     model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',

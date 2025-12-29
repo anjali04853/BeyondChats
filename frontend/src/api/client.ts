@@ -12,10 +12,10 @@ const apiClient = axios.create({
 
 export const articlesApi = {
   getAll: async (page = 1, limit = 10): Promise<ArticlesResponse> => {
-    const response = await apiClient.get<ArticlesResponse>('/articles', {
+    const response = await apiClient.get<{ articles: Article[]; pagination: ArticlesResponse['pagination'] }>('/articles', {
       params: { page, limit },
     });
-    return response.data;
+    return { data: response.data.articles, pagination: response.data.pagination };
   },
 
   getById: async (id: number): Promise<Article> => {
