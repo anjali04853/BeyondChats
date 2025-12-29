@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { config } from '../config';
 import { logger } from '../utils/logger';
-import { ScrapedArticle } from '../types';
+import { ScrapedArticle, EnhancedContent } from '../types';
 
 interface ApiArticle {
   id: number;
@@ -10,6 +10,16 @@ interface ApiArticle {
   author: string | null;
   publication_date: string | null;
   source_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ApiEnhancedArticle {
+  id: number;
+  original_article_id: number;
+  enhanced_content: string;
+  reference_urls: string[];
+  enhancement_date: string;
   created_at: string;
   updated_at: string;
 }
@@ -137,6 +147,89 @@ class ApiService {
         url: sourceUrl,
       });
       return false;
+    }
+  }
+
+  /**
+   * Store an enhanced article via the backend API
+   * Requirements: 6.5
+   * @param originalArticleId The ID of the original article
+   * @param enhancedContent The enhanced content with citations
+   * @returns The created enhanced article from the API
+   */
+  async storeEnhancedArticle(
+    originalArticleId: number,
+    enhancedContent: EnhancedContent
+  ): Promise<ApiEnhancedArticle | null> {
+    try {
+      logger.info('ApiService', 'Storing enhanced article via API', {
+        originalArticleId,
+        referenceCount: enhancedContent.reference_urls.length,
+      });
+
+      const response = await this.client.post<ApiEnhancedArticle>('/enhanced-articles', {
+        original_article_id: originalArticleId,
+        enhanced_content: enhancedContent.enhanced_content,
+        reference_urls: enhancedContent.reference_urls,
+      });
+
+      logger.info('ApiService', 'Enhanced article stored successfully', {
+        id: response.data.id,
+        originalArticleId: response.data.original_article_id,
+      });
+
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiError>;
+      const errorMessage = axiosError.response?.data?.message || axiosError.message || 'Unknown error';
+
+      logger.error('ApiService', 'Failed to store enhanced article', {
+        originalArticleId,
+        error: errorMessage,
+        status: axiosError.response?.status,
+      });
+
+      return null;
+    }
+  }
+
+  /**
+   * Get an article by ID
+   * @param id The article ID
+   * @returns The article or null if not found
+   */
+  async getArticle(id: number): Promise<ApiArticle | null> {
+    try {
+      const response = await this.client.get<ApiArticle>(`/articles/${id}`);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiError>;
+      logger.error('ApiService', 'Failed to get article', {
+        id,
+        error: axiosError.message,
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Get all articles with pagination
+   * @param page Page number
+   * @param limit Items per page
+   * @returns Array of articles
+   */
+  async getArticles(page = 1, limit = 10): Promise<ApiArticle[]> {
+    try {
+      const response = await this.client.get<{ data: ApiArticle[] }>('/articles', {
+        params: { page, limit },
+      });
+      return response.data.data || [];
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiError>;
+      logger.error('ApiService', 'Failed to get articles', {
+        error: axiosError.message,
+      });
+      return [];
     }
   }
 }

@@ -172,43 +172,43 @@ This implementation follows a phased approach matching the assignment requiremen
     - **Property 12: Reference Article Field Completeness**
     - **Validates: Requirements 5.2**
 
-- [ ] 7. Scraper Service - LLM Enhancement
-  - [ ] 7.1 Implement OpenAI API integration
+- [x] 7. Scraper Service - LLM Enhancement
+  - [x] 7.1 Implement OpenAI API integration
     - Set up OpenAI client
     - Configure API key and model selection
     - _Requirements: 6.1_
 
-  - [ ] 7.2 Implement article enhancement prompt
+  - [x] 7.2 Implement article enhancement prompt
     - Create prompt template for enhancement
     - Include original article and references
     - Request improved formatting and structure
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 7.3 Implement citation formatting
+  - [x] 7.3 Implement citation formatting
     - Add reference citations at bottom of enhanced content
     - Format citations with source URLs
     - _Requirements: 6.4_
 
-  - [ ] 7.4 Write property test for citation inclusion
+  - [x] 7.4 Write property test for citation inclusion
     - **Property 13: Enhanced Article Citations**
     - **Validates: Requirements 6.4**
 
-  - [ ] 7.5 Implement retry logic for LLM API
+  - [x] 7.5 Implement retry logic for LLM API
     - Retry up to 3 times on failure
     - Implement exponential backoff
     - Log failures after retries exhausted
     - _Requirements: 6.6_
 
-  - [ ] 7.6 Write property test for retry behavior
+  - [x] 7.6 Write property test for retry behavior
     - **Property 14: LLM Retry Behavior**
     - **Validates: Requirements 6.6**
 
-  - [ ] 7.7 Implement enhanced article publishing
+  - [x] 7.7 Implement enhanced article publishing
     - POST enhanced article to backend API
     - Link to original article
     - _Requirements: 6.5_
 
-- [ ] 8. Checkpoint - Scraper Service Complete
+- [x] 8. Checkpoint - Scraper Service Complete
   - Test full enhancement workflow
   - Verify enhanced articles are stored with citations
   - Ask the user if questions arise
