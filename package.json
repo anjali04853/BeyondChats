@@ -3,20 +3,9 @@
   "version": "1.0.0",
   "description": "Full-stack article scraper with AI enhancement",
   "private": true,
-  "workspaces": [
-    "backend",
-    "scraper",
-    "frontend"
-  ],
   "scripts": {
-    "backend": "npm run dev --workspace=backend",
-    "scraper": "npm run dev --workspace=scraper",
-    "frontend": "npm run dev --workspace=frontend",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3"
+    "backend": "cd backend && npm run dev",
+    "scraper": "cd scraper && npm run dev",
+    "frontend": "cd frontend && npm run dev"
   }
 }
