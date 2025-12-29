@@ -4,9 +4,9 @@ A full-stack application that scrapes articles from BeyondChats blog, enhances t
 
 ## 🌐 Live Demo
 
-**Frontend:** [https://beyondchats-articles.vercel.app](https://beyondchats-articles.vercel.app)
+**Live Application:** [https://beyondchats-ocbd.onrender.com](https://beyondchats-ocbd.onrender.com)
 
-**Backend API:** [https://beyondchats-api.onrender.com](https://beyondchats-api.onrender.com)
+**API Endpoint:** [https://beyondchats-ocbd.onrender.com/api/articles](https://beyondchats-ocbd.onrender.com/api/articles)
 
 ---
 
