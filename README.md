@@ -372,7 +372,7 @@ cd frontend && npm test
 
 ## 👤 Author
 
-**Anjali Varma**
+**Anjali Verma**
 
 ---
 
