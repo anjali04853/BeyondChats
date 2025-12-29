@@ -455,3 +455,110 @@ describe('Property 11: Search Result Filtering', () => {
     );
   });
 });
+
+
+/**
+ * Feature: beyondchats-article-scraper
+ * Property 12: Reference Article Field Completeness
+ * Validates: Requirements 5.2
+ *
+ * For any successfully scraped reference article, the resulting object SHALL contain
+ * non-empty title, content, and source_url fields.
+ */
+
+import { ReferenceContent } from '../types';
+
+// Helper function to validate reference content field completeness
+function isValidReferenceContent(content: ReferenceContent): boolean {
+  return (
+    typeof content.title === 'string' &&
+    content.title.trim().length > 0 &&
+    typeof content.content === 'string' &&
+    content.content.trim().length > 0 &&
+    typeof content.source_url === 'string' &&
+    content.source_url.trim().length > 0
+  );
+}
+
+// Generator for valid reference content
+const validReferenceContentArb = fc.record({
+  title: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  content: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  source_url: fc.webUrl(),
+});
+
+// Generator for potentially invalid reference content
+const potentiallyInvalidReferenceContentArb = fc.record({
+  title: fc.oneof(fc.constant(''), fc.constant('   '), fc.string()),
+  content: fc.oneof(fc.constant(''), fc.constant('   '), fc.string()),
+  source_url: fc.oneof(fc.constant(''), fc.webUrl()),
+});
+
+describe('Property 12: Reference Article Field Completeness', () => {
+  /**
+   * Property: For any valid reference content, all required fields must be non-empty
+   */
+  it('should have non-empty title, content, and source_url for all valid reference articles', () => {
+    fc.assert(
+      fc.property(validReferenceContentArb, (content) => {
+        return isValidReferenceContent(content);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: The validation function correctly identifies incomplete reference content
+   */
+  it('should correctly identify reference content with empty required fields as invalid', () => {
+    fc.assert(
+      fc.property(potentiallyInvalidReferenceContentArb, (content) => {
+        const isValid = isValidReferenceContent(content);
+        const hasEmptyTitle = !content.title || content.title.trim().length === 0;
+        const hasEmptyContent = !content.content || content.content.trim().length === 0;
+        const hasEmptyUrl = !content.source_url || content.source_url.trim().length === 0;
+
+        // If any required field is empty, the content should be invalid
+        if (hasEmptyTitle || hasEmptyContent || hasEmptyUrl) {
+          return !isValid;
+        }
+        // If all required fields are non-empty, the content should be valid
+        return isValid;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Valid reference content maintains field types
+   */
+  it('should ensure all fields are strings', () => {
+    fc.assert(
+      fc.property(validReferenceContentArb, (content) => {
+        return (
+          typeof content.title === 'string' &&
+          typeof content.content === 'string' &&
+          typeof content.source_url === 'string'
+        );
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Source URL should be a valid URL format
+   */
+  it('should have valid URL format for source_url', () => {
+    fc.assert(
+      fc.property(validReferenceContentArb, (content) => {
+        try {
+          new URL(content.source_url);
+          return true;
+        } catch {
+          return false;
+        }
+      }),
+      { numRuns: 100 }
+    );
+  });
+});

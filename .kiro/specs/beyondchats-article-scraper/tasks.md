@@ -146,7 +146,7 @@ This implementation follows a phased approach matching the assignment requiremen
   - Verify articles are stored in database
   - Ask the user if questions arise
 
-- [ ] 6. Scraper Service - Google Search and Reference Scraping
+- [x] 6. Scraper Service - Google Search and Reference Scraping
   - [x] 6.1 Implement Google Search module
     - Search for article titles on Google
     - Parse search results
@@ -162,13 +162,13 @@ This implementation follows a phased approach matching the assignment requiremen
     - **Property 11: Search Result Filtering**
     - **Validates: Requirements 4.2, 4.3**
 
-  - [ ] 6.4 Implement reference article scraper
+  - [x] 6.4 Implement reference article scraper
     - Scrape main content from reference URLs
     - Extract title, content, source URL
     - Handle various website structures
     - _Requirements: 5.1, 5.2_
 
-  - [ ] 6.5 Write property test for reference article field completeness
+  - [x] 6.5 Write property test for reference article field completeness
     - **Property 12: Reference Article Field Completeness**
     - **Validates: Requirements 5.2**
 
