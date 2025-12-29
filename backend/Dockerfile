@@ -43,6 +43,9 @@ COPY --from=builder /app/backend/dist ./backend/dist
 # Copy built frontend
 COPY --from=builder /app/frontend/dist ./frontend/dist
 
+# Copy database file (if exists)
+COPY --from=builder /app/backend/database.sqlite ./backend/database.sqlite* || true
+
 # Expose port
 EXPOSE 3001
 
