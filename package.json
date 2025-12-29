@@ -2,10 +2,5 @@
   "name": "beyondchats-article-scraper",
   "version": "1.0.0",
   "description": "Full-stack article scraper with AI enhancement",
-  "private": true,
-  "scripts": {
-    "backend": "cd backend && npm run dev",
-    "scraper": "cd scraper && npm run dev",
-    "frontend": "cd frontend && npm run dev"
-  }
+  "private": true
 }
