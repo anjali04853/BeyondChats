@@ -146,19 +146,19 @@ This implementation follows a phased approach matching the assignment requiremen
   - Verify articles are stored in database
   - Ask the user if questions arise
 
-- [-] 6. Scraper Service - Google Search and Reference Scraping
-  - [ ] 6.1 Implement Google Search module
+- [ ] 6. Scraper Service - Google Search and Reference Scraping
+  - [x] 6.1 Implement Google Search module
     - Search for article titles on Google
     - Parse search results
     - _Requirements: 4.1_
 
-  - [ ] 6.2 Implement search result filtering
+  - [x] 6.2 Implement search result filtering
     - Filter for blog/article links only
     - Exclude beyondchats.com results
     - Return first 2 valid results
     - _Requirements: 4.2, 4.3_
 
-  - [ ] 6.3 Write property test for search result filtering
+  - [x] 6.3 Write property test for search result filtering
     - **Property 11: Search Result Filtering**
     - **Validates: Requirements 4.2, 4.3**
 

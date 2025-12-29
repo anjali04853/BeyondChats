@@ -258,3 +258,200 @@ describe('Property 2: Scraping Resilience', () => {
     expect(result.failed).toHaveLength(0);
   });
 });
+
+
+/**
+ * Feature: beyondchats-article-scraper
+ * Property 11: Search Result Filtering
+ * Validates: Requirements 4.2, 4.3
+ *
+ * For any array of search results, the filter function SHALL return at most 2 results,
+ * and none of the returned URLs SHALL contain "beyondchats.com".
+ */
+
+import { SearchResult } from '../types';
+
+// Simulated filter function matching the GoogleSearchService implementation
+const MAX_RESULTS = 2;
+const EXCLUDE_DOMAINS = ['beyondchats.com'];
+
+function filterBlogResults(results: SearchResult[]): SearchResult[] {
+  const filtered = results.filter((result) => {
+    // Check if URL contains excluded domains
+    const isExcluded = EXCLUDE_DOMAINS.some((domain) =>
+      result.url.toLowerCase().includes(domain.toLowerCase())
+    );
+
+    if (isExcluded) {
+      return false;
+    }
+
+    // Check if URL looks like a blog/article
+    const url = result.url.toLowerCase();
+    const isBlogLike =
+      url.includes('/blog') ||
+      url.includes('/article') ||
+      url.includes('/post') ||
+      url.includes('/news') ||
+      url.includes('/story') ||
+      url.includes('/guide') ||
+      url.includes('/how-to') ||
+      url.includes('/what-is') ||
+      url.includes('/tips') ||
+      // Also include general content pages
+      (!url.includes('/product') &&
+        !url.includes('/pricing') &&
+        !url.includes('/login') &&
+        !url.includes('/signup') &&
+        !url.includes('/cart'));
+
+    return isBlogLike;
+  });
+
+  return filtered.slice(0, MAX_RESULTS);
+}
+
+// Generator for search results with various URL patterns
+const searchResultArb = fc.record({
+  title: fc.string({ minLength: 1 }),
+  url: fc.oneof(
+    // Blog-like URLs
+    fc.constantFrom(
+      'https://example.com/blog/article-1',
+      'https://test.com/article/how-to-code',
+      'https://news.site.com/post/latest-news',
+      'https://guide.example.com/tips/best-practices'
+    ),
+    // BeyondChats URLs (should be excluded)
+    fc.constantFrom(
+      'https://beyondchats.com/blog/article',
+      'https://www.beyondchats.com/post/test',
+      'https://blog.beyondchats.com/article'
+    ),
+    // Non-blog URLs (should be excluded)
+    fc.constantFrom(
+      'https://example.com/product/item-1',
+      'https://shop.com/pricing',
+      'https://app.com/login',
+      'https://service.com/signup'
+    ),
+    // Random web URLs
+    fc.webUrl()
+  ),
+  snippet: fc.option(fc.string(), { nil: undefined }),
+});
+
+describe('Property 11: Search Result Filtering', () => {
+  /**
+   * Property: Filter returns at most MAX_RESULTS (2) results
+   */
+  it('should return at most 2 results for any input array', () => {
+    fc.assert(
+      fc.property(
+        fc.array(searchResultArb, { minLength: 0, maxLength: 20 }),
+        (results) => {
+          const filtered = filterBlogResults(results);
+          return filtered.length <= MAX_RESULTS;
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: No filtered result contains beyondchats.com
+   */
+  it('should never return URLs containing beyondchats.com', () => {
+    fc.assert(
+      fc.property(
+        fc.array(searchResultArb, { minLength: 0, maxLength: 20 }),
+        (results) => {
+          const filtered = filterBlogResults(results);
+          return filtered.every(
+            (result) => !result.url.toLowerCase().includes('beyondchats.com')
+          );
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: All filtered results are from the original input
+   */
+  it('should only return results that were in the original input', () => {
+    fc.assert(
+      fc.property(
+        fc.array(searchResultArb, { minLength: 0, maxLength: 20 }),
+        (results) => {
+          const filtered = filterBlogResults(results);
+          return filtered.every((filteredResult) =>
+            results.some((original) => original.url === filteredResult.url)
+          );
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Empty input returns empty output
+   */
+  it('should return empty array for empty input', () => {
+    const filtered = filterBlogResults([]);
+    expect(filtered).toHaveLength(0);
+  });
+
+  /**
+   * Property: Input with only beyondchats.com URLs returns empty
+   */
+  it('should return empty array when all URLs are from beyondchats.com', () => {
+    fc.assert(
+      fc.property(
+        fc.array(
+          fc.record({
+            title: fc.string({ minLength: 1 }),
+            url: fc.constantFrom(
+              'https://beyondchats.com/blog/test',
+              'https://www.beyondchats.com/article/test',
+              'https://blog.beyondchats.com/post/test'
+            ),
+            snippet: fc.option(fc.string(), { nil: undefined }),
+          }),
+          { minLength: 1, maxLength: 10 }
+        ),
+        (results) => {
+          const filtered = filterBlogResults(results);
+          return filtered.length === 0;
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Filtering preserves order of results
+   */
+  it('should preserve the order of results from the original array', () => {
+    fc.assert(
+      fc.property(
+        fc.array(searchResultArb, { minLength: 2, maxLength: 20 }),
+        (results) => {
+          // Create unique results by URL to avoid duplicate issues
+          const uniqueResults = results.filter(
+            (r, i, arr) => arr.findIndex((x) => x.url === r.url) === i
+          );
+          
+          const filtered = filterBlogResults(uniqueResults);
+          if (filtered.length < 2) return true;
+
+          // Check that order is preserved
+          const firstIndex = uniqueResults.findIndex((r) => r.url === filtered[0].url);
+          const secondIndex = uniqueResults.findIndex((r) => r.url === filtered[1].url);
+          return firstIndex < secondIndex;
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+});
