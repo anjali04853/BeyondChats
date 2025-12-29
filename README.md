@@ -384,7 +384,38 @@ View individual articles with the ability to toggle between the original BeyondC
 - Link to original source
 - Side-by-side comparison capability
 
-![Article Detail](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-detail.png)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        BeyondChats Articles                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ◀ Back to Articles                                                          │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                                                                      │   │
+│  │  AI in Healthcare: Hype or Reality?                                 │   │
+│  │                                                                      │   │
+│  │  Simran Jain  •  March 25, 2025                                     │   │
+│  │                                                                      │   │
+│  │  ┌──────────────┐  ┌──────────────┐                                │   │
+│  │  │   Original   │  │  Enhanced    │                                │   │
+│  │  │  (selected)  │  │              │                                │   │
+│  │  └──────────────┘  └──────────────┘                                │   │
+│  │                                                                      │   │
+│  │  Explainable AI is definitely the way forward. At its current       │   │
+│  │  state, it should be seen more as an Assistive Intelligence        │   │
+│  │  rather than Artificial Intelligence.                              │   │
+│  │                                                                      │   │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │   │
+│  │  │ View Original Source                                         │  │   │
+│  │  └──────────────────────────────────────────────────────────────┘  │   │
+│  │                                                                      │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│                    BeyondChats Article Scraper © 2025                       │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
