@@ -10,6 +10,9 @@ COPY . .
 
 RUN npm run build
 
+# Verify dist folder exists
+RUN ls -la dist/ || echo "ERROR: dist folder not found!"
+
 RUN npm install -g serve
 
 EXPOSE 3000
