@@ -339,13 +339,15 @@ cd frontend && npm test
 ## 📸 Screenshots
 
 ### Article List View
-![Article List](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-list.png)
+Browse all scraped articles in a clean, responsive grid layout with pagination. Each article card displays the title, excerpt, author, and publication date.
 
 ### Article Detail with Original/Enhanced Toggle
-![Article Detail](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-detail.png)
-
-### Comparison View
-![Comparison View](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/comparison-view.png)
+View individual articles with the ability to toggle between the original BeyondChats version and the AI-enhanced version using Groq LLM. Features include:
+- Original article content from BeyondChats
+- Enhanced version with improved formatting and content
+- Author and publication date information
+- Link to original source
+- Side-by-side comparison capability
 
 ---
 
