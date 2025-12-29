@@ -2,13 +2,14 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy all package files
+# Copy root package files
 COPY package*.json ./
+
+# Copy service package files
 COPY backend/package*.json ./backend/
 COPY frontend/package*.json ./frontend/
-COPY scraper/package*.json ./scraper/
 
-# Install all dependencies
+# Install dependencies
 RUN npm ci --prefix backend
 RUN npm ci --prefix frontend
 
@@ -16,7 +17,7 @@ RUN npm ci --prefix frontend
 COPY backend ./backend
 COPY frontend ./frontend
 
-# Build frontend (API URL will default to relative path /api)
+# Build frontend
 RUN npm run build --prefix frontend
 
 # Build backend
@@ -27,8 +28,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy root package files
 COPY package*.json ./
+
+# Copy backend package files
 COPY backend/package*.json ./backend/
 
 # Install production dependencies only
