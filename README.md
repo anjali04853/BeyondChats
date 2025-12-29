@@ -338,11 +338,14 @@ cd frontend && npm test
 
 ## 📸 Screenshots
 
-### Article List
-![Article List](https://via.placeholder.com/800x400?text=Article+List+View)
+### Article List View
+![Article List](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-list.png)
 
-### Article Detail with Toggle
-![Article Detail](https://via.placeholder.com/800x400?text=Original+vs+Enhanced+Toggle)
+### Article Detail with Original/Enhanced Toggle
+![Article Detail](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-detail.png)
+
+### Comparison View
+![Comparison View](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/comparison-view.png)
 
 ---
 
