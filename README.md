@@ -341,7 +341,40 @@ cd frontend && npm test
 ### Article List View
 Browse all scraped articles in a clean, responsive grid layout with pagination. Each article card displays the title, excerpt, author, and publication date.
 
-![Article List](https://raw.githubusercontent.com/anjali04853/BeyondChats/main/screenshots/article-list.png)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        BeyondChats Articles                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐          │
+│  │ AI in Healthcare │  │ What If AI       │  │ What If AI       │          │
+│  │ Hype or Reality? │  │ Recommends Wrong │  │ Recommends Wrong │          │
+│  │                  │  │ Medicine – Who's │  │ Medicine – Who's │          │
+│  │ Explainable AI   │  │ to Blame?        │  │ Responsible?     │          │
+│  │ is definitely... │  │                  │  │                  │          │
+│  │                  │  │ Introduction:    │  │ Introduction:    │          │
+│  │ Simran Jain      │  │ The Unspoken...  │  │ The Unspoken...  │          │
+│  │ Mar 25, 2025     │  │                  │  │                  │          │
+│  │                  │  │ Simran Jain      │  │ Simran Jain      │          │
+│  │                  │  │ Mar 24, 2025     │  │ Mar 24, 2025     │          │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘          │
+│                                                                              │
+│  ┌──────────────────┐  ┌──────────────────┐                                │
+│  │ Your website     │  │ Will AI          │                                │
+│  │ needs a          │  │ Understand the   │                                │
+│  │ receptionist     │  │ Complexities of  │                                │
+│  │                  │  │ Patient Care?    │                                │
+│  │ So true! Not     │  │                  │                                │
+│  │ having an        │  │ Very well        │                                │
+│  │ interactive...   │  │ written. But I   │                                │
+│  │                  │  │ feel it's only...│                                │
+│  │ pankaj           │  │                  │                                │
+│  │ Mar 25, 2025     │  │ Simran Jain      │                                │
+│  │                  │  │ Apr 3, 2025      │                                │
+│  └──────────────────┘  └──────────────────┘                                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ### Article Detail with Original/Enhanced Toggle
 View individual articles with the ability to toggle between the original BeyondChats version and the AI-enhanced version using Groq LLM. Features include:
