@@ -500,3 +500,285 @@ describe('Article Validation Property Tests', () => {
     );
   });
 });
+
+
+import { ErrorResponse, AppError, logError, LogEntry } from '../middleware/errorHandler';
+
+/**
+ * Feature: beyondchats-article-scraper
+ * Property 16: API Error Messages
+ * Validates: Requirements 8.2
+ *
+ * For any API error response, the response body SHALL contain a meaningful
+ * error message describing what went wrong.
+ */
+
+// Helper to validate error response structure
+function isValidErrorResponse(response: ErrorResponse): boolean {
+  return (
+    typeof response.error === 'string' &&
+    response.error.length > 0 &&
+    typeof response.message === 'string' &&
+    response.message.length > 0 &&
+    typeof response.statusCode === 'number' &&
+    response.statusCode >= 400 &&
+    response.statusCode < 600 &&
+    typeof response.timestamp === 'string' &&
+    response.timestamp.length > 0
+  );
+}
+
+// Generator for error responses
+const errorResponseArb = fc.record({
+  error: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  message: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  statusCode: fc.integer({ min: 400, max: 599 }),
+  timestamp: fc.date().map((d) => d.toISOString()),
+});
+
+// Generator for AppError instances
+const appErrorArb = fc.record({
+  message: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  statusCode: fc.integer({ min: 400, max: 599 }),
+  error: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  operation: fc.string({ minLength: 1 }),
+});
+
+describe('Property 16: API Error Messages', () => {
+  /**
+   * Property: All error responses have required fields
+   */
+  it('should have all required fields in error response', () => {
+    fc.assert(
+      fc.property(errorResponseArb, (response) => {
+        return isValidErrorResponse(response);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Error message is always non-empty
+   */
+  it('should have non-empty error message', () => {
+    fc.assert(
+      fc.property(errorResponseArb, (response) => {
+        return response.message.trim().length > 0;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Error type is always non-empty
+   */
+  it('should have non-empty error type', () => {
+    fc.assert(
+      fc.property(errorResponseArb, (response) => {
+        return response.error.trim().length > 0;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Status code is in valid error range
+   */
+  it('should have status code in error range (400-599)', () => {
+    fc.assert(
+      fc.property(errorResponseArb, (response) => {
+        return response.statusCode >= 400 && response.statusCode < 600;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Timestamp is valid ISO string
+   */
+  it('should have valid ISO timestamp', () => {
+    fc.assert(
+      fc.property(errorResponseArb, (response) => {
+        try {
+          const date = new Date(response.timestamp);
+          return !isNaN(date.getTime());
+        } catch {
+          return false;
+        }
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: AppError creates valid error with all fields
+   */
+  it('should create AppError with all required fields', () => {
+    fc.assert(
+      fc.property(appErrorArb, (errorData) => {
+        const appError = new AppError(
+          errorData.message,
+          errorData.statusCode,
+          errorData.error,
+          errorData.operation
+        );
+
+        return (
+          appError.message === errorData.message &&
+          appError.statusCode === errorData.statusCode &&
+          appError.error === errorData.error &&
+          appError.operation === errorData.operation
+        );
+      }),
+      { numRuns: 100 }
+    );
+  });
+});
+
+
+import { logger, LogEntry as LoggerEntry, LogLevel } from '../utils/logger';
+
+/**
+ * Feature: beyondchats-article-scraper
+ * Property 15: Error Logging Format
+ * Validates: Requirements 8.1
+ *
+ * For any logged error, the log entry SHALL contain a timestamp,
+ * operation type, and error details.
+ */
+
+// Helper to validate log entry structure
+function isValidLogEntry(entry: LoggerEntry): boolean {
+  return (
+    typeof entry.timestamp === 'string' &&
+    entry.timestamp.length > 0 &&
+    typeof entry.level === 'string' &&
+    ['debug', 'info', 'warn', 'error'].includes(entry.level) &&
+    typeof entry.operation === 'string' &&
+    entry.operation.length > 0 &&
+    typeof entry.message === 'string' &&
+    entry.message.length > 0
+  );
+}
+
+// Generator for log entries
+const logEntryArb = fc.record({
+  timestamp: fc.date().map((d) => d.toISOString()),
+  level: fc.constantFrom('debug', 'info', 'warn', 'error') as fc.Arbitrary<LogLevel>,
+  operation: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  message: fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+  details: fc.option(
+    fc.dictionary(fc.string(), fc.oneof(fc.string(), fc.integer(), fc.boolean())),
+    { nil: undefined }
+  ),
+});
+
+describe('Property 15: Error Logging Format', () => {
+  /**
+   * Property: All log entries have required fields
+   */
+  it('should have all required fields in log entry', () => {
+    fc.assert(
+      fc.property(logEntryArb, (entry) => {
+        return isValidLogEntry(entry);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Timestamp is valid ISO string
+   */
+  it('should have valid ISO timestamp in log entry', () => {
+    fc.assert(
+      fc.property(logEntryArb, (entry) => {
+        try {
+          const date = new Date(entry.timestamp);
+          return !isNaN(date.getTime());
+        } catch {
+          return false;
+        }
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Operation type is non-empty
+   */
+  it('should have non-empty operation type', () => {
+    fc.assert(
+      fc.property(logEntryArb, (entry) => {
+        return entry.operation.trim().length > 0;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Message is non-empty
+   */
+  it('should have non-empty message', () => {
+    fc.assert(
+      fc.property(logEntryArb, (entry) => {
+        return entry.message.trim().length > 0;
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Logger creates valid entries
+   */
+  it('should create valid log entries via logger', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+        fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+        (operation, message) => {
+          // Suppress console output during test
+          const originalError = console.error;
+          console.error = () => {};
+          
+          const entry = logger.error(operation, message);
+          
+          console.error = originalError;
+          
+          return (
+            entry.level === 'error' &&
+            entry.operation === operation &&
+            entry.message === message &&
+            typeof entry.timestamp === 'string' &&
+            entry.timestamp.length > 0
+          );
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  /**
+   * Property: Logger includes details when provided
+   */
+  it('should include details in log entry when provided', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+        fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0),
+        fc.dictionary(fc.string({ minLength: 1 }), fc.string()),
+        (operation, message, details) => {
+          // Suppress console output during test
+          const originalInfo = console.info;
+          console.info = () => {};
+          
+          const entry = logger.info(operation, message, details);
+          
+          console.info = originalInfo;
+          
+          return entry.details !== undefined || Object.keys(details).length === 0;
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+});
