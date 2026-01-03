@@ -3,11 +3,8 @@ import path from 'path';
 
 dotenv.config();
 
-// In production (Docker), database is at /app/backend/database.sqlite
-// In development, it's at ./database.sqlite (relative to backend folder)
-const dbPath = process.env.NODE_ENV === 'production'
-  ? path.join(__dirname, '../database.sqlite')
-  : './database.sqlite';
+// Absolute path to the database.sqlite in the backend root
+const dbPath = path.resolve(__dirname, '../../database.sqlite');
 
 export const config = {
   port: parseInt(process.env.PORT || '3001', 10),
